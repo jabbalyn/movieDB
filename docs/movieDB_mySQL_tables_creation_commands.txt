@@ -1,0 +1,101 @@
+| actor | CREATE TABLE `actor` (
+  `actorID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) DEFAULT NULL,
+  `birthdate` date DEFAULT NULL,
+  PRIMARY KEY (`actorID`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 |
+------------------------------------
+| actormovie | CREATE TABLE `actormovie` (
+  `movieID` bigint(20) unsigned NOT NULL,
+  `actorID` bigint(20) unsigned NOT NULL,
+  `actorBilling` smallint(5) unsigned DEFAULT NULL,
+  `firstBilled` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`movieID`,`actorID`),
+  KEY `actorID` (`actorID`),
+  CONSTRAINT `actormovie_ibfk_1` FOREIGN KEY (`movieID`) REFERENCES `movie` (`mo
+vieID`),
+  CONSTRAINT `actormovie_ibfk_2` FOREIGN KEY (`actorID`) REFERENCES `actor` (`ac
+torID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 |
+---------------------------
+| actorrole | CREATE TABLE `actorrole` (
+  `roleID` bigint(20) unsigned NOT NULL,
+  `actorID` bigint(20) unsigned NOT NULL,
+  `roleBilling` tinyint(3) unsigned DEFAULT NULL,
+  PRIMARY KEY (`roleID`,`actorID`),
+  KEY `actorID` (`actorID`),
+  CONSTRAINT `actorrole_ibfk_1` FOREIGN KEY (`roleID`) REFERENCES `role` (`roleI
+D`),
+  CONSTRAINT `actorrole_ibfk_2` FOREIGN KEY (`actorID`) REFERENCES `actor` (`act
+orID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 |
+------------------------------------------
+| director | CREATE TABLE `director` (
+  `directorID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) DEFAULT NULL,
+  `birthdate` date DEFAULT NULL,
+  PRIMARY KEY (`directorID`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 |
+------------------------------------------------------
+| directormovie | CREATE TABLE `directormovie` (
+  `directorID` bigint(20) unsigned NOT NULL,
+  `movieID` bigint(20) unsigned NOT NULL,
+  PRIMARY KEY (`directorID`,`movieID`),
+  KEY `movieID` (`movieID`),
+  CONSTRAINT `directormovie_ibfk_1` FOREIGN KEY (`directorID`) REFERENCES `direc
+tor` (`directorID`),
+  CONSTRAINT `directormovie_ibfk_2` FOREIGN KEY (`movieID`) REFERENCES `movie` (
+`movieID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 |
+------------------------------------------------------
+| genre | CREATE TABLE `genre` (
+  `genreID` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  PRIMARY KEY (`genreID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 |
+------------------------------------------------------------
+| genremovie | CREATE TABLE `genremovie` (
+  `genreID` smallint(5) unsigned NOT NULL,
+  `movieID` bigint(20) unsigned NOT NULL,
+  PRIMARY KEY (`genreID`,`movieID`),
+  KEY `movieID` (`movieID`),
+  CONSTRAINT `genremovie_ibfk_2` FOREIGN KEY (`movieID`) REFERENCES `movie` (`mo
+vieID`),
+  CONSTRAINT `genremovie_ibfk_3` FOREIGN KEY (`genreID`) REFERENCES `genre` (`ge
+nreID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 |
+---------------------------------------------------------
+| movie | CREATE TABLE `movie` (
+  `movieID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `length` smallint(5) unsigned DEFAULT NULL,
+  `usaReleaseDate` date DEFAULT NULL,
+  PRIMARY KEY (`movieID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 |
+----------------------------------------------------------------
+| movietitle | CREATE TABLE `movietitle` (
+  `movieID` bigint(20) unsigned NOT NULL,
+  `language` char(3) NOT NULL,
+  `country` char(2) NOT NULL,
+  `title` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`movieID`,`language`,`country`),
+  CONSTRAINT `movietitle_ibfk_1` FOREIGN KEY (`movieID`) REFERENCES `movie` (`mo
+vieID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 |
+-----------------------------------------------------------------------
+| role  | CREATE TABLE `role` (
+  `roleID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `roleName` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`roleID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 |
+
+---------------------------------------------------------------
+| rolemovie | CREATE TABLE `rolemovie` (
+  `movieID` bigint(20) unsigned NOT NULL,
+  `roleID` bigint(20) unsigned NOT NULL,
+  PRIMARY KEY (`movieID`,`roleID`),
+  KEY `roleID` (`roleID`),
+  CONSTRAINT `rolemovie_ibfk_1` FOREIGN KEY (`movieID`) REFERENCES `movie` (`mov
+ieID`),
+  CONSTRAINT `rolemovie_ibfk_2` FOREIGN KEY (`roleID`) REFERENCES `role` (`roleI
+D`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 |

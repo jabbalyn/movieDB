@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+<!-- 
+Build file for movieDB application.
+-->
+
+<project name="movieDB2" basedir="." default="build">
+    <property name="appname" value="${ant.project.name}" />
+    <property name="env" value="local" />
+
+    <property name="junit_install_jar" value="../../junit/junit-4.12.jar" />
+    <property name="hamcrest_core_jar" value="../../junit/hamcrest-core-1.3.jar" />
+	
+    <property name="dbunit_jar" value="../../dbunit/dbunit-2.5.1.jar" />
+    <property name="slf4j_logging_jar" value="../../dbunit/slf4j-api-1.7.13.jar" />
+    <property name="slf4j_simple_jar" value="../../dbunit/slf4j-simple-1.7.13.jar" />
+	<property name="mysql_jdbc_jar" value="../../mysql/mysql-connector-java-5.1.37/mysql-connector-java-5.1.37-bin.jar" />
+
+    <property name="servletapi_jar" value="../../apache-tomcat-8.0.29/lib/servlet-api.jar" />
+
+    <property name="web.dir" value="web" />
+    <property name="src.dir" value="src" />
+    <property name="docs.dir" value="docs" />
+    <property name="srcmain.dir" value="src/main" />
+    <property name="srctests.dir" value="src/tests" />
+    <property name="lib.dir" value="lib" />
+    <property name="dist.dir" value="dist" />
+    <property name="tmp.dir" value="tmp" />
+	
+    <property name="img.dir" value="images" />
+    <property name="build.dir" value="build" />
+    <property name="conf.dir" value="${src.dir}/conf" />
+	
+    <property name="war.dir" value="${build.dir}/${appname}" />
+    <property name="war.file" value="${dist.dir}/${appname}.war" />
+    <property name="webinf.dir" value="${war.dir}/WEB-INF" />
+    <property name="class.dir" value="${war.dir}/WEB-INF/classes" />
+    <property name="warlib.dir" value="${war.dir}/WEB-INF/lib" />
+    <property name="jsp.dir" value="${war.dir}/WEB-INF/jsp" />
+	
+    <property name="dbresources.dir" value="resources/db" />
+    <property name="dbtestxmls.dir" value="${class.dir}/movieDB/db" />
+	
+    <path id="master-classpath" description="Master CLASSPATH for this script">
+        <fileset dir="${lib.dir}">
+            <include name="*.jar" />
+        </fileset>
+    	<pathelement location="${class.dir}" />
+        <pathelement location="${junit_install_jar}" />
+        <pathelement location="${hamcrest_core_jar}" />
+        <pathelement location="${dbunit_jar}" />
+        <pathelement location="${slf4j_logging_jar}" />
+        <pathelement location="${slf4j_simple_jar}" />
+    	<pathelement location="${mysql_jdbc_jar}" />
+    	<pathelement location="${servletapi_jar}" />
+    </path>
+	
+	<target name="printmessage">
+		<echo message="Hello World from Ant!"/>
+	</target>
+
+	<target name="init" description="Setup for build script">
+		<mkdir dir="${srcmain.dir}" />
+		<mkdir dir="${docs.dir}" />
+		<mkdir dir="${srctests.dir}" />
+		<mkdir dir="${conf.dir}" />
+		<mkdir dir="${web.dir}" />
+
+		<mkdir dir="${class.dir}" />
+		<mkdir dir="${lib.dir}" />
+		<mkdir dir="${warlib.dir}" />
+		<mkdir dir="${jsp.dir}" />
+	</target>
+	
+    <target name="compile" depends="init" 
+    	    description="Compiles .java files to WAR directory">
+        <javac srcdir="${srcmain.dir}" destdir="${class.dir}" debug="true" 
+               failonerror="true" classpathref="master-classpath" 
+        	includeantruntime="false" />
+        <javac srcdir="${srctests.dir}" destdir="${class.dir}" debug="true" 
+               failonerror="true" classpathref="master-classpath" 
+        	includeantruntime="false" />
+    </target>
+	
+    <target name="clean" description="Deletes files from WAR directory">
+        <delete failonerror="false">
+            <fileset dir="${war.dir}">
+                <include name="**/*.*" />
+            </fileset>
+        </delete>
+        <delete failonerror="false">
+            <fileset dir="${dist.dir}">
+                <include name="**/*" />
+            </fileset>
+        </delete>
+    </target>
+
+    <target name="build" depends="compile" />
+    	
+    <target name="rebuild" 
+            depends="clean,compile" />
+            	
+    <target name="runTests" depends="compile">
+    	  <copy todir="${dbtestxmls.dir}">
+    	    <fileset dir="${dbresources.dir}">
+    	      <exclude name="**/*.java"/>
+    	    </fileset>
+    	  </copy>
+        <junit printsummary="yes" showoutput="yes" filtertrace="false">
+            <classpath refid="master-classpath" />
+            <batchtest fork="yes">
+                <formatter type="plain" />
+                <fileset dir="${class.dir}">
+                    <include name="**/*Test.class" />
+                </fileset>
+                <fileset dir="${class.dir}">
+                    <include name="**/*.xml" />
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>	
+
+</project>
