@@ -1,5 +1,2 @@
-.externalToolBuilders/
-.project
-.settings/
 build/
 TEST-movieDB*Test.txt
