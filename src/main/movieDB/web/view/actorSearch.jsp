@@ -16,7 +16,7 @@
 <body>
 <% 
 	List<Actor> actors = (List<Actor>) request.getAttribute("actors");
-	if (actors.size() == 0) {
+	if ((actors == null) || (actors.size() == 0)) {
 		out.println("No actors were found with that criteria.<br>");
 	}
 %>
