@@ -13,6 +13,8 @@ import java.util.Vector;
 import movieDB.core.Actor;
 import movieDB.core.DuplicateException;
 import movieDB.db.UtilsSQL;
+import movieDB.db.NotInDataStoreException;
+import movieDB.db.FailedUpdateException;
 
 public class ActorDAOJdbcImpl implements ActorDAO {
 
@@ -27,7 +29,20 @@ public class ActorDAOJdbcImpl implements ActorDAO {
 		this.conn = conn;
 	}
 	
+	// creates a default statement, whose ResultSet's will default to type TYPE_FORWARD_ONLY and concurrency
+	// CONCUR_READ_ONLY
 	private Statement createDefaultStatement(Connection connection) throws SQLException {
+		
+		// TODO: move the stmt creation to an open() method; add a close() method to close and release
+		// the conn and stmt objects
+		return connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, 
+				ResultSet.CONCUR_READ_ONLY);
+	}
+	
+	// creates a statement whose ResultSet's will have type TYPE_SCROLL_INSENSITIVE and concurrency
+	// of type CONCUR_UPDATABLE
+	private Statement createUpdatableStatement(Connection connection) throws SQLException {
+		
 		// TODO: move the stmt creation to an open() method; add a close() method to close and release
 		// the conn and stmt objects
 		return connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, 
@@ -52,6 +67,52 @@ public class ActorDAOJdbcImpl implements ActorDAO {
 			if (rs.next()) return true;
 			else return false;
 		} finally {
+			close(stmt, rs);
+		}
+	}
+
+	// persists the information in the Actor object, but only if the ID in the passed-in object matches the ID  
+	// of an Actor already stored in the database / datastore. 
+	//
+	// throws NotInDataStoreException if actor passed in is null, or if the actor's ID doesn't match the ID of any actor 
+	// object in the data store.
+	// throws FailedUpdateException if the transaction was attempted but rolled back, and and no update was made
+	// throws SQLException if there were any SQL-related errors during the operation.
+
+	public void persist(Actor actor) throws NotInDataStoreException, FailedUpdateException, SQLException {
+		
+		if (actor == null) throw new NotInDataStoreException("database cannot have a null actor");
+		Statement stmt = null;
+		ResultSet rs = null; 
+		
+		// must do two-part transaction: first, get the actor's information from the database, then do
+		// a 2nd call to update the record. Therefore, we must turn off auto-commit, make the changes, commit
+		// them, and then turn auto-commit back on.
+
+		try {
+			stmt = createUpdatableStatement(conn);
+			conn.setAutoCommit(false);	
+			
+			rs = stmt.executeQuery("SELECT ACTORID, NAME, BIRTHDATE FROM ACTOR WHERE actorID= " + actor.getID());			
+			if (! rs.isBeforeFirst()) throw new NotInDataStoreException("no actor with ID " + actor.getID()
+											+ "could be found in the data store");
+			
+			// actor's ID exists in the database, so we can now update the actor's information
+			rs.next();
+			rs.updateString(2, actor.getName());
+			rs.updateString(3, UtilsSQL.getSQLDateFromCalendar(actor.getBirthDate()));
+			rs.updateRow();
+			conn.commit();
+			
+		} catch(SQLException ex) {
+			try {
+				conn.rollback();
+				throw new FailedUpdateException(ex);
+			} catch (SQLException ex2) {
+				throw ex2;
+			}
+		} finally {
+			conn.setAutoCommit(true);
 			close(stmt, rs);
 		}
 	}

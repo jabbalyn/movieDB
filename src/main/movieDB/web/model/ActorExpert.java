@@ -6,6 +6,9 @@ import java.util.Collection;
 import movieDB.db.DAOFactory;
 import movieDB.db.JDBCDAOFactory;
 import movieDB.db.ActorDAO;
+import movieDB.db.NotInDataStoreException;
+import movieDB.db.FailedUpdateException;
+
 import movieDB.core.Actor;
 
 public class ActorExpert {
@@ -32,6 +35,12 @@ public class ActorExpert {
 	
 	public Actor getActorById(long id) throws SQLException {
 		return actorDAO.getActorById(id);
+	}
+	
+	// TODO: remove references to SQLException, replace with something generic and non-SQL specific
+
+	public void persist(Actor actor) throws NotInDataStoreException, FailedUpdateException, SQLException {
+		actorDAO.persist(actor);
 	}
 	
 }

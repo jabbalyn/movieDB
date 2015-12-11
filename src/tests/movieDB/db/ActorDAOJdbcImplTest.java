@@ -239,4 +239,66 @@ public class ActorDAOJdbcImplTest {
 		Collection<Actor> actors = actorDAO.getActors("Harrison Ford");
 		Assert.assertTrue("getActors(name) from empty actor table should lead to zero results",actors.size() == 0);
 	}
+
+	@Test(expected=NotInDataStoreException.class)
+	public void testPersistActorIsNull_RecordPresent() throws Exception {
+		IDataSet expectedDataSet = getDataSet(SINGLE_ACTOR_XML_FILE);	
+		DatabaseOperation.CLEAN_INSERT.execute(dbUnitConnection, expectedDataSet);
+
+		actorDAO.persist(null);
+	}
+	@Test(expected=NotInDataStoreException.class)
+	public void testPersistActorIsNull_RecordMissing() throws Exception {
+		IDataSet expectedDataSet = getDataSet(SINGLE_ACTOR_XML_FILE);	
+		DatabaseOperation.DELETE_ALL.execute(dbUnitConnection, expectedDataSet);
+
+		actorDAO.persist(null);
+	}
+	
+	@Test(expected=NotInDataStoreException.class)
+	public void testPersistActor_NOT_InDatabase() throws Exception {
+		IDataSet expectedDataSet = getDataSet(SINGLE_ACTOR_XML_FILE);	
+		DatabaseOperation.DELETE_ALL.execute(dbUnitConnection, expectedDataSet);
+		
+		String newName = "Harrison A Ford";
+		String newBirthDate = "1952-5-25";
+		Actor actor2 = new Actor(newName, UtilsSQL.getCalendarFromSQLDate(newBirthDate));
+		actor2.setID(1);
+		
+		Assert.assertTrue("SQL Connection autoCommit should be true", conn.getAutoCommit());
+		actorDAO.persist(actor2);
+		Assert.assertTrue("SQL Connection autoCommit should be true", conn.getAutoCommit());
+	}
+	
+	@Test 
+	public void testPersistActorInDatabase() throws Exception {
+		IDataSet expectedDataSet = getDataSet(SINGLE_ACTOR_XML_FILE);	
+		DatabaseOperation.CLEAN_INSERT.execute(dbUnitConnection, expectedDataSet);
+		
+		Actor actor1 = actorDAO.getActorById(1);
+		Assert.assertEquals("Harrison Ford should be found", HARRISON_FORD, actor1.getName());
+		Assert.assertEquals("Harrison Ford's birthdate should be 1943-7-13", 
+							"1943-7-13", 
+							UtilsSQL.getSQLDateFromCalendar(actor1.getBirthDate()));
+		Assert.assertTrue("Harrison Ford's ID should be 1", actor1.getID() == 1);
+		
+		String newName = "Harrison A Ford";
+		String newBirthDate = "1952-5-25";
+		Actor actor2 = new Actor(newName, UtilsSQL.getCalendarFromSQLDate(newBirthDate));
+		actor2.setID(1);
+		
+		Assert.assertTrue("SQL Connection autoCommit should be true", conn.getAutoCommit());
+		actorDAO.persist(actor2);
+		Assert.assertTrue("SQL Connection autoCommit should be true", conn.getAutoCommit());
+		
+		Assert.assertTrue("SQL Connection autoCommit should be true", conn.getAutoCommit());
+		Actor actor3 = actorDAO.getActorById(1);
+		Assert.assertTrue("SQL Connection autoCommit should be true", conn.getAutoCommit());
+		
+		Assert.assertTrue("final ID should still be 1", actor3.getID() == 1);
+		Assert.assertEquals("new Name should be found", newName, actor3.getName());
+		Assert.assertEquals("new birthdate should be found", newBirthDate, 
+							UtilsSQL.getSQLDateFromCalendar(actor3.getBirthDate()));
+		Assert.assertTrue("new ID should be 1", actor3.getID() == 1);
+	}
 }
