@@ -3,7 +3,7 @@
 Build file for movieDB application.
 -->
 
-<project name="movieDB2" basedir="." default="build">
+<project name="movieDB" basedir="." default="build">
     <property name="appname" value="${ant.project.name}" />
     <property name="env" value="local" />
 

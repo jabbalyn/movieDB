@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>movieDB2</name>
+	<name>movieDB</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -33,17 +33,17 @@
 		<link>
 			<name>build.xml</name>
 			<type>1</type>
-			<location>C:/Users/Carlos/Java/workspace/movieDB2/build.xml</location>
+			<location>C:/Users/Carlos/Java/workspace/movieDB/build.xml</location>
 		</link>
 		<link>
 			<name>main</name>
 			<type>2</type>
-			<location>C:/Users/Carlos/Java/workspace/movieDB2/src/main</location>
+			<location>C:/Users/Carlos/Java/workspace/movieDB/src/main</location>
 		</link>
 		<link>
 			<name>tests</name>
 			<type>2</type>
-			<location>C:/Users/Carlos/Java/workspace/movieDB2/src/tests</location>
+			<location>C:/Users/Carlos/Java/workspace/movieDB/src/tests</location>
 		</link>
 	</linkedResources>
 </projectDescription>
