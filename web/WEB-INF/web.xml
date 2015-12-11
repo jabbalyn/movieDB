@@ -14,13 +14,13 @@ id="WebApp_ID" version="3.0">
 	</context-param>
 	<listener>
 		<listener-class>
-			movieDB.web.webappServletContextListener
+			movieDB.web.controller.webappServletContextListener
 		</listener-class>
 		
 	</listener>
 	<servlet>
 		<servlet-name>ActorSearch</servlet-name>
-		<servlet-class>movieDB.web.ActorSearch</servlet-class>
+		<servlet-class>movieDB.web.controller.ActorSearchServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>ActorSearch</servlet-name>
