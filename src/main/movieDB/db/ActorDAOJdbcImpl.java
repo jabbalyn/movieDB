@@ -16,48 +16,18 @@ import movieDB.db.UtilsSQL;
 import movieDB.db.NotInDataStoreException;
 import movieDB.db.FailedUpdateException;
 
-public class ActorDAOJdbcImpl implements ActorDAO {
+public class ActorDAOJdbcImpl extends GenericDAOJdbcImpl implements ActorDAO {
 
-	private Connection conn = null;
-	private Statement stmt = null;
-	
 	public ActorDAOJdbcImpl(Connection conn) {
-		setConnection(conn);
-	}
-	
-	private void setConnection(Connection conn) {
-		this.conn = conn;
-	}
-	
-	// creates a default statement, whose ResultSet's will default to type TYPE_FORWARD_ONLY and concurrency
-	// CONCUR_READ_ONLY
-	private Statement createDefaultStatement(Connection connection) throws SQLException {
-		
-		// TODO: move the stmt creation to an open() method; add a close() method to close and release
-		// the conn and stmt objects
-		return connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, 
-				ResultSet.CONCUR_READ_ONLY);
-	}
-	
-	// creates a statement whose ResultSet's will have type TYPE_SCROLL_INSENSITIVE and concurrency
-	// of type CONCUR_UPDATABLE
-	private Statement createUpdatableStatement(Connection connection) throws SQLException {
-		
-		// TODO: move the stmt creation to an open() method; add a close() method to close and release
-		// the conn and stmt objects
-		return connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, 
-				ResultSet.CONCUR_UPDATABLE);
-	}
-	
-	private void close(Statement stmt, ResultSet rs) throws SQLException {
-			if (rs != null) rs.close();
-			if (stmt != null) stmt.close();
+		super(conn);
 	}
 	
 	// method to double check whether an actor with the same attributes (i.e. name, birthdate, etc) has 
 	// already been added, irrespective of the actorID associated with it
 	private boolean databaseHasActor(Actor actor) throws SQLException {
+		
 		if (actor == null) return false;
+		
 		Statement stmt = null;
 		ResultSet rs = null;
 		try {

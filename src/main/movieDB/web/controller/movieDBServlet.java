@@ -18,7 +18,6 @@ import movieDB.db.ActorDAO;
 import movieDB.db.UtilsSQL;
 import movieDB.web.model.ActorExpert;
 import movieDB.db.DAOFactory;
-import movieDB.db.FactoryNotFoundException;
 
 public abstract class movieDBServlet extends HttpServlet {
 
