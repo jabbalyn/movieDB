@@ -10,7 +10,7 @@ id="WebApp_ID" version="3.0">
 	</context-param>
 	<context-param>
 		<param-name>databaseURL</param-name>
-		<param-value>jdbc:mysql://localhost/test?user=root&amp;password=$hollywood1945</param-value>
+		<param-value>jdbc:mysql://localhost/test?user=userMovieDB&amp;password=losangeles1928</param-value>
 	</context-param>
 	<listener>
 		<listener-class>
