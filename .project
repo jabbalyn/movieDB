@@ -31,19 +31,24 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>build</name>
+			<type>2</type>
+			<location>C:/Java/eclipse_workspace/movieDB/build</location>
+		</link>
+		<link>
 			<name>build.xml</name>
 			<type>1</type>
-			<location>C:/Users/Carlos/Java/workspace/movieDB/build.xml</location>
+			<location>C:/Java/eclipse_workspace/movieDB/build.xml</location>
 		</link>
 		<link>
 			<name>main</name>
 			<type>2</type>
-			<location>C:/Users/Carlos/Java/workspace/movieDB/src/main</location>
+			<location>C:/Java/eclipse_workspace/movieDB/src/main</location>
 		</link>
 		<link>
 			<name>tests</name>
 			<type>2</type>
-			<location>C:/Users/Carlos/Java/workspace/movieDB/src/tests</location>
+			<location>C:/Java/eclipse_workspace/movieDB/src/tests</location>
 		</link>
 	</linkedResources>
 </projectDescription>
